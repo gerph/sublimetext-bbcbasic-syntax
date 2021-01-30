@@ -1,0 +1,121 @@
+%YAML 1.2
+---
+# BBC BASIC syntax colouring mode.
+#
+# Intended for use with BBC BASIC V/VI files in text format, for RISC OS. Should work
+# acceptably well with earlier versions of BBC BASIC and variants from other platforms.
+#
+
+# See http://www.sublimetext.com/docs/3/syntax.html
+name: BBC BASIC
+file_extensions: ['bbc']
+scope: source.bbcbasic
+
+contexts:
+  main:
+    # The main context is the initial starting point of our syntax.
+    # Include other contexts from here (or specify them directly).
+    - include: linenumber
+    - include: comments
+    - include: keywords
+    - include: cli
+    - include: numbers
+    - include: strings
+
+  linenumber:
+    - match: "^ *[0-9]+ *"
+      scope: entity.line-number.bbcbasic
+
+  keywords:
+    - match: "(DEF *PROC|FN) *([@A-Za-z_][@A-Za-z_0-9]*)"
+      captures:
+        '1': storage.type.function.bbcbasic
+        '2': entity.name.function.bbcbasic
+
+    - match: "(END *PROC)$"
+      scope: storage.type.function.bbcbasic
+
+    # Conditional statements
+    - match: "(IF|THEN|ELSE|ENDIF)"
+      scope: keyword.control.flow.bbcbasic
+
+    # Switch statements
+    - match: "(CASE|OTHERWISE|WHEN|ENDCASE)"
+      scope: keyword.control.flow.bbcbasic
+
+    # Loop statements
+    - match: "(FOR|NEXT|REPEAT|UNTIL|WHILE|ENDWHILE)"
+      scope: keyword.control.flow.bbcbasic
+
+    # Legacy control flow
+    - match: "(RETURN|GOTO|GOSUB)"
+      scope: keyword.control.flow.bbcbasic
+
+    # Exceptional operations
+    - match: "(ON|END|STOP|QUIT)"
+      scope: keyword.control.flow.bbcbasic
+
+    - match: "(PROC|FN)([@A-Za-z_][@A-Za-z_0-9]*)"
+      captures:
+        '1': keyword.control.bbcbasic
+        '2': meta.function-call.bbcbasic
+
+    - match: "\
+        AND|DIV|EOR|MOD|OR|ERROR|\
+        LINE|OFF|STEP|SPC|TAB|\
+        OPENIN|PTR|PAGE|TIME|LOMEM|HIMEM|ABS|\
+        ACS|ADVAL|ASC|ASN|ATN|BGET|COS|COUNT|\
+        DEG|ERL|ERR|EVAL|EXP|EXT|FALSE|\
+        GET|INKEY|INSTR|INT|LEN|LN|LOG|NOT|\
+        OPENUP|OPENOUT|PI|POINT|POS|RAD|RND|\
+        SGN|SIN|SQR|TAN|TO|TRUE|USR|VAL|VPOS|\
+        EOF|PTR|PAGE|TIME|\
+        LOMEM|HIMEM|SOUND|BPUT|CALL|CHAIN|CLEAR|\
+        CLOSE|CLG|CLS|DATA|DIM|DRAW|\
+        ENVELOPE|GCOL|\
+        INPUT|LET|LOCAL|MODE|MOVE|\
+        VDU|PLOT|PRINT|PROC|READ|\
+        REPORT|RESTORE|RUN|COLOUR|\
+        TRACE|WIDTH|OSCLI|\
+        OF|\
+        CIRCLE|FILL|ORIGIN|POINT|RECTANGLE|SWAP|\
+        WAIT|MOUSE|SYS|INSTALL|\
+        LIBRARY|TINT|ELLIPSE|BEATS|TEMPO|VOICES|\
+        VOICE|STEREO|OVERLAY|APPEND|AUTO|CRUNCH|\
+        DELETE|EDIT|HELP|LIST|LOAD|LVAR|NEW|\
+        OLD|RENUMBER|SAVE|TEXTLOAD|TEXTSAVE|\
+        TWIN|TWINO|INSTALL|SUM|BEAT"
+      scope: keyword.control.bbcbasic
+
+  numbers:
+    - match: '[+-]?[0-9]+(\.[0-9]+)?(E[\-+]?[0-9]+)'
+      scope: constant.numeric.bbcbasic
+
+    - match: '(-)?[0-9.]+|(&[0-9a-fA-f]{1,8})|%([01]+)'
+      scope: constant.numeric.bbcbasic
+
+  strings:
+    # Strings begin and end with quotes.
+    - match: '(".*?")'
+      scope: string.quoted.double.bbcbasic
+
+  comments:
+    # Comments begin with a 'REM' and finish at the end of the line.
+    - match: 'REM'
+      scope: punctuation.definition.comment.bbcbasic
+      push:
+        # This is an anonymous context push for brevity.
+        - meta_scope: comment.line.rem.bbcbasic
+        - match: $\n?
+          pop: true
+
+    # CLI commands that start with a | are effectively a comment
+    # (Note: This does not cope with comments following a line number prefix)
+    - match: '^ *\*\|.*'
+      scope: comment.line.rem.bbcbasic
+
+  cli:
+    # CLI commands are harder to recognise without a stateful process here, but we try
+    # to recognise what we can with the 'preprocessor' type of statement
+    - match: '^( *|.*: *|.*THEN *|.*ELSE *)\*.*'
+      scope: meta.directive.bbcbasic keyword.other.preprocessor.include.c
