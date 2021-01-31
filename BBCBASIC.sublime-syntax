@@ -27,12 +27,16 @@ contexts:
       scope: entity.line-number.bbcbasic
 
   keywords:
-    - match: "(DEF *PROC|FN) *([@A-Za-z_][@A-Za-z_0-9]*)"
+    - match: "(DEF *(?:PROC|FN)) *([@A-Za-z_][@A-Za-z_0-9]*)"
       captures:
         '1': storage.type.function.bbcbasic
         '2': entity.name.function.bbcbasic
 
     - match: "(END *PROC)$"
+      scope: storage.type.function.bbcbasic
+
+    - match: "^="
+      # Try to identify the '=' termination of the function
       scope: storage.type.function.bbcbasic
 
     # Conditional statements
