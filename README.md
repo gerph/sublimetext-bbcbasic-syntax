@@ -12,7 +12,7 @@ The coloured features are:
 
 * Comments, prefixed by `REM`.
 * Function and procedure declarations (and their end).
-* Funciton and procedure invocations.
+* Function and procedure invocations.
 * Control and loop structures.
 * Line number prefixes.
 * BASIC style hex (`&xxx`) and binary (`%bbb`) numbers.
