@@ -20,6 +20,7 @@ contexts:
     - include: keywords
     - include: cli
     - include: numbers
+    - include: variables
     - include: strings
 
   linenumber:
@@ -59,7 +60,7 @@ contexts:
     - match: "(ON|END|STOP|QUIT)"
       scope: keyword.control.flow.bbcbasic
 
-    - match: "(PROC|FN)([@A-Za-z_][@A-Za-z_0-9]*)"
+    - match: "(PROC|FN)([`@A-Za-z_][`@A-Za-z_0-9]*)"
       captures:
         '1': keyword.control.bbcbasic
         '2': meta.function-call.bbcbasic
@@ -99,6 +100,16 @@ contexts:
 
     - match: '(-)?[0-9.]+|(&[0-9a-fA-F]{1,8})|%([01]+)'
       scope: constant.numeric.bbcbasic
+
+  variables:
+    - match: '[`A-Za-z_][`A-Za-z0-9_]*%'
+      scope: variable.integer.bbcbasic
+
+    - match: '[`A-Za-z_][`A-Za-z0-9_]*\$'
+      scope: variable.string.bbcbasic
+
+    - match: '[`A-Za-z_][`A-Za-z0-9_]*'
+      scope: variable.float.bbcbasic
 
   strings:
     # Strings begin and end with quotes.
