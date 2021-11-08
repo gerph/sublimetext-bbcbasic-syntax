@@ -97,7 +97,7 @@ contexts:
     - match: '[+-]?[0-9]+(\.[0-9]+)?(E[\-+]?[0-9]+)'
       scope: constant.numeric.bbcbasic
 
-    - match: '(-)?[0-9.]+|(&[0-9a-fA-f]{1,8})|%([01]+)'
+    - match: '(-)?[0-9.]+|(&[0-9a-fA-F]{1,8})|%([01]+)'
       scope: constant.numeric.bbcbasic
 
   strings:
